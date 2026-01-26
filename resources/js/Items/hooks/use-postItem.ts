@@ -14,7 +14,6 @@ export default function usePostItem(onCloseDialog: () => void, onReOpenDialog: (
     const {item, remaining, image, setitem, setremaining, setimage, resetForm} = useItemsStore();
 
     const fetchSavings = [
-        'prize',
         'Fetchitems'
     ];
 

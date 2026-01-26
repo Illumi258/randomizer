@@ -15,6 +15,7 @@ class saveItemsServices {
             'user_id' => $user->id,
             'item' => $items['item'],
             'remaining' => $items['remaining'],
+            'status' => 'active', // Add default status
         ];
 
         // Handle image upload

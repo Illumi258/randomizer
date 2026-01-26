@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ItemsController;
+use App\Http\Controllers\ParticipantsController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -33,6 +34,14 @@ Route::middleware('auth')->group(function () {
             // Route::get('/{id}', 'show')->name('show');
             Route::put('/{id}', 'updateItems')->name('UpdateItems');
             Route::delete('/{id}', 'deleteItem')->name('DestroyItem');
+        });
+
+    // Participants API routes
+    Route::prefix('api/participants')
+        ->name('participants.')
+        ->controller(ParticipantsController::class)
+        ->group(function () {
+            Route::post('/', 'store')->name('SaveParticipants');
         });
 });
 

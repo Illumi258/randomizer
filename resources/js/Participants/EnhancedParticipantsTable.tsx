@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import ParticipantsTable from './table/ParticipantsTable';
-import { FetchItemData } from '@/Items/types';
+import AddParticipantsDialog from './dialog/AddParticipantsDialog';
+import { FetchParticipantsData } from '@/Participants/types';
 import useDynamicQuery from '@/hooks/useDynamicQuery';
 import { showItems } from '@/Items/api/getItems';
 import Box from '@mui/material/Box';
@@ -9,15 +10,23 @@ export default function EnhancedParticipantsTable() {
   const [selected, setSelected] = useState<number[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  // Fetch items (you can replace this with a participants-specific API later)
+  // TODO: Replace with participants-specific API later
   const {
-    data: items_data,
-    isPending: isPending_items,
-    isError: isError_items,
+    data: participants_data,
+    isPending: isPending_participants,
+    isError: isError_participants,
   } = useDynamicQuery(['FetchParticipants'], showItems);
 
-  const rows = items_data || [];
+  // For now, transform items data to participants format (temporary)
+  const rows: FetchParticipantsData[] = (participants_data || []).map((item: any) => ({
+    id: item.id,
+    fullname: item.item, // temporary mapping
+    position: 'Position', // temporary
+    created_at: item.created_at,
+    updated_at: item.updated_at,
+  }));
 
   const handleSelect = (id: number) => {
     const selectedIndex = selected.indexOf(id);
@@ -39,8 +48,7 @@ export default function EnhancedParticipantsTable() {
   };
 
   const handleAdd = () => {
-    console.log('Add participant');
-    // TODO: Open add dialog
+    setDialogOpen(true);
   };
 
   const handleDelete = () => {
@@ -49,16 +57,16 @@ export default function EnhancedParticipantsTable() {
     setSelected([]);
   };
 
-  const handleEdit = (item: FetchItemData) => {
-    console.log('Edit participant:', item);
+  const handleEdit = (participant: FetchParticipantsData) => {
+    console.log('Edit participant:', participant);
     // TODO: Open edit dialog
   };
 
-  if (isPending_items) {
+  if (isPending_participants) {
     return <Box sx={{ p: 3, textAlign: 'center' }}>Loading...</Box>;
   }
 
-  if (isError_items) {
+  if (isError_participants) {
     return <Box sx={{ p: 3, textAlign: 'center', color: 'error.main' }}>Error loading participants</Box>;
   }
 
@@ -81,6 +89,11 @@ export default function EnhancedParticipantsTable() {
         rowsPerPage={rowsPerPage}
         onPageChange={setPage}
         onRowsPerPageChange={setRowsPerPage}
+      />
+      
+      <AddParticipantsDialog 
+        open={dialogOpen} 
+        onClose={() => setDialogOpen(false)} 
       />
     </Box>
   );

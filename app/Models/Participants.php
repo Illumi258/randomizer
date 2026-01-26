@@ -12,5 +12,6 @@ class Participants extends Model {
      protected $fillable = [
         'fullname',
         'position',
+        'redeemed_item',
      ];
 }

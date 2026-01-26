@@ -1,17 +1,15 @@
 import { ReusableTable, Column } from '@/Components/ReusableComponents/Table/ReusableTable';
-import { FetchItemData } from '@/Items/types';
-import Avatar from '@mui/material/Avatar';
-import ImageIcon from '@mui/icons-material/Image';
+import { FetchParticipantsData } from '@/Participants/types';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 
 interface Props {
-  rows: FetchItemData[];
+  rows: FetchParticipantsData[];
   selected: number[];
   onSelect: (id: number) => void;
   onAdd: () => void;
   onDelete: () => void;
-  onEdit: (item: FetchItemData) => void;
+  onEdit: (participant: FetchParticipantsData) => void;
   page: number;
   rowsPerPage: number;
   onPageChange: (page: number) => void;
@@ -19,22 +17,9 @@ interface Props {
 }
 
 export default function ParticipantsTable(props: Props) {
-  const columns: Column<FetchItemData>[] = [
-    { id: 'item', label: 'Item Prize' },
-    { id: 'remaining', label: 'Remaining', align: 'right' },
-    { id: 'reedem', label: 'Redeemed', align: 'right' },
-    {
-      id: 'image',
-      label: 'Image',
-      align: 'center',
-      render: row => (
-        <Avatar
-          src={row.image ? `/storage/${row.image}` : undefined}
-        >
-          {!row.image && <ImageIcon />}
-        </Avatar>
-      ),
-    },
+  const columns: Column<FetchParticipantsData>[] = [
+    { id: 'fullname', label: 'Full Name' },
+    { id: 'position', label: 'Position' },
     {
       id: 'actions',
       label: 'Actions',

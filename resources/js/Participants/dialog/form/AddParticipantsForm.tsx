@@ -21,8 +21,8 @@ export default function AddParticipantsForm({
                 placeholder="Enter Full name"
                 value={fullname}
                 onChange={(e) => onParticipantsChange(e.target.value)}
-                error={!!errors?.item}
-                helperText={errors?.item}
+                error={!!errors?.fullname}
+                helperText={errors?.fullname}
                 fullWidth
                 disabled={isLoading}
                 variant="outlined"
@@ -34,9 +34,9 @@ export default function AddParticipantsForm({
                 label="Position"
                 placeholder="Enter Position"
                 value={position}
-                onChange={(e) => onPositionChange(Number(e.target.value))}
-                error={!!errors?.remaining}
-                helperText={errors?.remaining}
+                onChange={(e) => onPositionChange(e.target.value)}
+                error={!!errors?.position}
+                helperText={errors?.position}
                 fullWidth
                 disabled={isLoading}
                 variant="outlined"

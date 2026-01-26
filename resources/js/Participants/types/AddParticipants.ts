@@ -6,7 +6,11 @@ export interface AddParticipantsFormProps {
     errors?: Partial<Record<keyof ParticipantsForm, string>>;
     isLoading?: boolean;
     onParticipantsChange: (value: string) => void;
-    onPositionChange: (value: number) => void;
-    onImageChange: (file: File | null) => void;
+    onPositionChange: (value: string) => void;
     inputRef?: React.RefObject<HTMLInputElement>;
+}
+
+export interface SavingParticipantsData {
+    fullname: string;
+    position: string;
 }
