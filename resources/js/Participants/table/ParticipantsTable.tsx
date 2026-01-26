@@ -20,6 +20,7 @@ export default function ParticipantsTable(props: Props) {
   const columns: Column<FetchParticipantsData>[] = [
     { id: 'fullname', label: 'Full Name' },
     { id: 'position', label: 'Position' },
+    { id: 'redeemed_item', label: 'Redeemed Item' },
     {
       id: 'actions',
       label: 'Actions',

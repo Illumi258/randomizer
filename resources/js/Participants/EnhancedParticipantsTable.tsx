@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import ParticipantsTable from './table/ParticipantsTable';
 import AddParticipantsDialog from './dialog/AddParticipantsDialog';
+import UpdateParticipantDialog from './dialog/UpdateParticipantDialog';
+import DeleteConfirmDialog from './dialog/DeleteConfirmDialog';
 import { FetchParticipantsData } from '@/Participants/types';
 import useDynamicQuery from '@/hooks/useDynamicQuery';
-import { showItems } from '@/Items/api/getItems';
+import { showParticipants } from '@/Participants/api/getParticipants';
+import useDeleteParticipant from '@/Participants/hooks/use-deleteParticipant';
 import Box from '@mui/material/Box';
 
 export default function EnhancedParticipantsTable() {
@@ -11,22 +14,20 @@ export default function EnhancedParticipantsTable() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedParticipant, setSelectedParticipant] = useState<FetchParticipantsData | null>(null);
 
-  // TODO: Replace with participants-specific API later
+  const { deleteParticipantMutation, isPendingDelete } = useDeleteParticipant();
+
+  // Fetch participants data
   const {
     data: participants_data,
     isPending: isPending_participants,
     isError: isError_participants,
-  } = useDynamicQuery(['FetchParticipants'], showItems);
+  } = useDynamicQuery(['FetchParticipants'], showParticipants);
 
-  // For now, transform items data to participants format (temporary)
-  const rows: FetchParticipantsData[] = (participants_data || []).map((item: any) => ({
-    id: item.id,
-    fullname: item.item, // temporary mapping
-    position: 'Position', // temporary
-    created_at: item.created_at,
-    updated_at: item.updated_at,
-  }));
+  const rows: FetchParticipantsData[] = participants_data || [];
 
   const handleSelect = (id: number) => {
     const selectedIndex = selected.indexOf(id);
@@ -52,14 +53,22 @@ export default function EnhancedParticipantsTable() {
   };
 
   const handleDelete = () => {
-    console.log('Delete participants:', selected);
-    // TODO: Implement delete logic
+    if (selected.length > 0) {
+      setDeleteDialogOpen(true);
+    }
+  };
+
+  const handleConfirmDelete = () => {
+    selected.forEach(id => {
+      deleteParticipantMutation(id);
+    });
     setSelected([]);
+    setDeleteDialogOpen(false);
   };
 
   const handleEdit = (participant: FetchParticipantsData) => {
-    console.log('Edit participant:', participant);
-    // TODO: Open edit dialog
+    setSelectedParticipant(participant);
+    setUpdateDialogOpen(true);
   };
 
   if (isPending_participants) {
@@ -94,6 +103,23 @@ export default function EnhancedParticipantsTable() {
       <AddParticipantsDialog 
         open={dialogOpen} 
         onClose={() => setDialogOpen(false)} 
+      />
+
+      <UpdateParticipantDialog 
+        open={updateDialogOpen}
+        onClose={() => {
+          setUpdateDialogOpen(false);
+          setSelectedParticipant(null);
+        }}
+        participantData={selectedParticipant}
+      />
+
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={handleConfirmDelete}
+        participantCount={selected.length}
+        isLoading={isPendingDelete}
       />
     </Box>
   );

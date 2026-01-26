@@ -42,6 +42,9 @@ Route::middleware('auth')->group(function () {
         ->controller(ParticipantsController::class)
         ->group(function () {
             Route::post('/', 'store')->name('SaveParticipants');
+            Route::get('show/participants', 'showParticipants')->name('ShowParticipants');
+            Route::put('/{id}', 'updateParticipants')->name('UpdateParticipants');
+            Route::delete('/{id}', 'deleteParticipant')->name('DestroyParticipant');
         });
 });
 
