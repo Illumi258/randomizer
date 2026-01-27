@@ -17,8 +17,8 @@ class SoftDeleteParticipantsServices {
             ];
         }
         
-       $participant->update([
-            'status' => 'Inactive'
+        $participant->update([
+            'status' => 'inactive'
         ]);
 
           return [

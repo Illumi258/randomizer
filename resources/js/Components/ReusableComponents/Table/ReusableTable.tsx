@@ -31,6 +31,8 @@ interface Props<T> {
 
   onAdd?: () => void;
   onDelete?: () => void;
+  onExport?: () => void;
+  onImport?: () => void;
 
   page: number;
   rowsPerPage: number;
@@ -47,6 +49,8 @@ export function ReusableTable<T>({
   onSelect,
   onAdd,
   onDelete,
+  onExport,
+  onImport,
   page,
   rowsPerPage,
   onPageChange,
@@ -64,6 +68,8 @@ export function ReusableTable<T>({
         numSelected={selected.length}
         onAdd={onAdd}
         onDelete={onDelete}
+        onExport={onExport}
+        onImport={onImport}
       />
 
       <TableContainer>

@@ -13,5 +13,6 @@ class Participants extends Model {
         'fullname',
         'position',
         'redeemed_item',
+        'status',
      ];
 }

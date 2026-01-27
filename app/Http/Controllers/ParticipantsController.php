@@ -7,6 +7,8 @@ use App\Services\ParticipantsServices\SaveParticipantsServices;
 use App\Services\ParticipantsServices\FetchParticipantsServices;
 use App\Services\ParticipantsServices\SoftDeleteParticipantsServices;
 use App\Services\ParticipantsServices\UpdateParticipantsServices;
+use App\Services\ParticipantsServices\ExportParticipantsServices;
+use App\Services\ParticipantsServices\ImportParticipantsServices;
 use App\Http\Requests\ParticipantsRequest;
 
 class ParticipantsController extends Controller
@@ -46,6 +48,29 @@ class ParticipantsController extends Controller
     public function updateParticipants($id, ParticipantsRequest $request, UpdateParticipantsServices $services)
     {
         $result = $services->updateParticipant($id, $request->validated());
+        return response()->json($result);
+    }
+
+    public function exportParticipants(ExportParticipantsServices $services)
+    {
+        $result = $services->exportParticipants();
+        
+        if ($result['success']) {
+            return response($result['data'])
+                ->header('Content-Type', 'text/csv')
+                ->header('Content-Disposition', 'attachment; filename="' . $result['filename'] . '"');
+        }
+        
+        return response()->json($result, 500);
+    }
+
+    public function importParticipants(Request $request, ImportParticipantsServices $services)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt|max:2048'
+        ]);
+
+        $result = $services->importParticipants($request->file('file'));
         return response()->json($result);
     }
 }

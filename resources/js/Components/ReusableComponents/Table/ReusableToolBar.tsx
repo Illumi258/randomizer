@@ -5,12 +5,17 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import { Box } from '@mui/material';
 
 interface Props {
   title: string;
   numSelected: number;
   onAdd?: () => void;
   onDelete?: () => void;
+  onExport?: () => void;
+  onImport?: () => void;
 }
 
 export default function ReusableTableToolbar({
@@ -18,6 +23,8 @@ export default function ReusableTableToolbar({
   numSelected,
   onAdd,
   onDelete,
+  onExport,
+  onImport,
 }: Props) {
   return (
     <Toolbar
@@ -42,13 +49,29 @@ export default function ReusableTableToolbar({
           </Tooltip>
         )
       ) : (
-        onAdd && (
-          <Tooltip title="Add">
-            <IconButton onClick={onAdd}>
-              <AddIcon />
-            </IconButton>
-          </Tooltip>
-        )
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          {onExport && (
+            <Tooltip title="Export CSV">
+              <IconButton onClick={onExport}>
+                <FileDownloadIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+          {onImport && (
+            <Tooltip title="Import CSV">
+              <IconButton onClick={onImport}>
+                <FileUploadIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+          {onAdd && (
+            <Tooltip title="Add">
+              <IconButton onClick={onAdd}>
+                <AddIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+        </Box>
       )}
     </Toolbar>
   );

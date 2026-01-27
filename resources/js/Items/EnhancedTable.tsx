@@ -403,10 +403,7 @@ export default function EnhancedTable() {
                                         {/* <TableCell align="left">{row.status}</TableCell> */}
                                         <TableCell align="center">
                                             {row.icon ? (
-                                                <div>
-                                                    <i className={`bx ${row.icon}`} style={{ fontSize: '24px', color: '#1976d2' }} />
-                                                    <div style={{ fontSize: '10px', color: '#666' }}>({row.icon})</div>
-                                                </div>
+                                                <i className={`bx ${row.icon}`} style={{ fontSize: '24px', color: '#000000ff' }} />
                                             ) : (
                                                 <span style={{ color: '#999', fontSize: '12px' }}>No Icon</span>
                                             )}

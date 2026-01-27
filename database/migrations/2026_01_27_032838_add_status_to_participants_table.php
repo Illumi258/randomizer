@@ -12,9 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('participants', function (Blueprint $table) {
-            $table->string('redeemed_item', 50)->nullable();
-            $table->string('item', 50)->nullable();
-            $table->string('status')->nullable();
+            $table->string('status')->default('active')->after('position');
         });
     }
 
@@ -24,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('participants', function (Blueprint $table) {
-           $table->dropColumn(['redeemed_item', 'item', 'status']);
+            $table->dropColumn('status');
         });
     }
 };

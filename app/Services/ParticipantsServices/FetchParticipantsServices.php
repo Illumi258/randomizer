@@ -15,6 +15,7 @@ class FetchParticipantsServices {
                 'redeemed_item',
                 'status'
             )
+           ->where('status', 'active')
            ->get();
 
            return [

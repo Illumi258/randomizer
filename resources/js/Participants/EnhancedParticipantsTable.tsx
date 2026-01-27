@@ -3,10 +3,12 @@ import ParticipantsTable from './table/ParticipantsTable';
 import AddParticipantsDialog from './dialog/AddParticipantsDialog';
 import UpdateParticipantDialog from './dialog/UpdateParticipantDialog';
 import DeleteConfirmDialog from './dialog/DeleteConfirmDialog';
+import ImportParticipantsDialog from './dialog/ImportParticipantsDialog';
 import { FetchParticipantsData } from '@/Participants/types';
 import useDynamicQuery from '@/hooks/useDynamicQuery';
 import { showParticipants } from '@/Participants/api/getParticipants';
 import useDeleteParticipant from '@/Participants/hooks/use-deleteParticipant';
+import useExportParticipants from '@/Participants/hooks/use-exportParticipants';
 import Box from '@mui/material/Box';
 
 export default function EnhancedParticipantsTable() {
@@ -16,9 +18,11 @@ export default function EnhancedParticipantsTable() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState<FetchParticipantsData | null>(null);
 
   const { deleteParticipantMutation, isPendingDelete } = useDeleteParticipant();
+  const { exportParticipantsMutation } = useExportParticipants();
 
   // Fetch participants data
   const {
@@ -71,6 +75,14 @@ export default function EnhancedParticipantsTable() {
     setUpdateDialogOpen(true);
   };
 
+  const handleExport = () => {
+    exportParticipantsMutation(undefined);
+  };
+
+  const handleImport = () => {
+    setImportDialogOpen(true);
+  };
+
   if (isPending_participants) {
     return <Box sx={{ p: 3, textAlign: 'center' }}>Loading...</Box>;
   }
@@ -94,6 +106,8 @@ export default function EnhancedParticipantsTable() {
         onAdd={handleAdd}
         onDelete={handleDelete}
         onEdit={handleEdit}
+        onExport={handleExport}
+        onImport={handleImport}
         page={page}
         rowsPerPage={rowsPerPage}
         onPageChange={setPage}
@@ -120,6 +134,11 @@ export default function EnhancedParticipantsTable() {
         onConfirm={handleConfirmDelete}
         participantCount={selected.length}
         isLoading={isPendingDelete}
+      />
+
+      <ImportParticipantsDialog
+        open={importDialogOpen}
+        onClose={() => setImportDialogOpen(false)}
       />
     </Box>
   );

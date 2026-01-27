@@ -45,6 +45,8 @@ Route::middleware('auth')->group(function () {
             Route::get('show/participants', 'showParticipants')->name('ShowParticipants');
             Route::put('/{id}', 'updateParticipants')->name('UpdateParticipants');
             Route::delete('/{id}', 'deleteParticipant')->name('DestroyParticipant');
+            Route::get('export', 'exportParticipants')->name('ExportParticipants');
+            Route::post('import', 'importParticipants')->name('ImportParticipants');
         });
 });
 

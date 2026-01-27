@@ -10,6 +10,8 @@ interface Props {
   onAdd: () => void;
   onDelete: () => void;
   onEdit: (participant: FetchParticipantsData) => void;
+  onExport?: () => void;
+  onImport?: () => void;
   page: number;
   rowsPerPage: number;
   onPageChange: (page: number) => void;
@@ -49,6 +51,8 @@ export default function ParticipantsTable(props: Props) {
       onSelect={props.onSelect}
       onAdd={props.onAdd}
       onDelete={props.onDelete}
+      onExport={props.onExport}
+      onImport={props.onImport}
       page={props.page}
       rowsPerPage={props.rowsPerPage}
       onPageChange={props.onPageChange}

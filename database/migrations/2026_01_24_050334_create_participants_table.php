@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('fullname', 100);
             $table->string('position', 50);
+            $table->string('redeemed_item')->nullable();
             $table->timestamps();
         });
     }

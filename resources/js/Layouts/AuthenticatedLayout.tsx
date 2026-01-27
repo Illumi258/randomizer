@@ -3,7 +3,7 @@ import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { usePage } from '@inertiajs/react';
-import { PropsWithChildren, ReactNode, useState } from 'react';
+import { PropsWithChildren, ReactNode, useState, useEffect } from 'react';
 
 export default function Authenticated({
     header,
@@ -19,6 +19,21 @@ export default function Authenticated({
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false); 
+
+    // Load boxicons CSS
+    useEffect(() => {
+        const link = document.createElement('link');
+        link.href = 'https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css';
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
+
+        return () => {
+            // Only remove if it exists
+            if (document.head.contains(link)) {
+                document.head.removeChild(link);
+            }
+        };
+    }, []); 
 
     return (
         <div className="min-h-screen bg-gray-100">
