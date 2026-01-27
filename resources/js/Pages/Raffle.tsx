@@ -1,56 +1,76 @@
 import '../../css/raffle.css';
 import { useState, useEffect, useRef } from 'react';
+import { showItems } from '@/Items/api/getItems';
+import { showParticipants } from '@/Participants/api/getParticipants';
+import useDynamicQuery from '@/hooks/useDynamicQuery';
 
 interface Winner {
   name: string;
   item: string;
 }
 
-// Mock data - participants
-const MOCK_PARTICIPANTS = [
-  'BALUYUT, NICOLEEN - GENERAL MANAGER',
-  'BUGUINA, CIPRIANO JR. - CHIEF FINANCE OFFICER',
-  'CALIWAG, CRYSTEL - OPERATIONS MANAGER',
-  'DE JESUS, CATHERINE ANGELA - SALES DIRECTOR',
-  'ACOVERA, MICAS - SALES ASSOCIATE',
-  'ALIMORONG, HAZEL - COLLECTION HEAD',
-  'ALIPIO, ANGEL VAN - AREA MANAGER',
-  'ALMEDINA, MARK ANTHONY - SALES ASSOCIATE',
-  'ANDILAB, MADINE JOY - ACCOUNTS ANALYST',
-  'ANIBAN, CHRISTINE - SALES ASSOCIATE',
-  'APAREJADO JR, ALEXANDER - REGIONAL MANAGER',
-  'AQUINO, HERBE - AREA MANAGER',
-  'ARISGADO, ALDEN - REVENUE ANALYST',
-  'AURINTO, VICKSON - MESSENGER',
-  'BALAGAT, HERSHIE MAE - SALES ASSOCIATE',
-  'BANAAG, ANGELA - COLLECTION ANALYST',
-  'BARRIOS, JONATHAN CHARLES - DATABASE ASSOCIATE',
-  'BATALLER, AUNDREY - SALES ASSOCIATE',
-  'BAUTISTA, BENEDICT - REGIONAL MANAGER',
-  'BITONIO, WINCHESTER - ACCOUNTS ANALYST',
-];
+// Icon mapping - directly use the stored icon values
+const getIconClass = (iconValue: string) => {
+  if (!iconValue) return 'bx-gift'; // default icon
+  return iconValue.startsWith('bx') ? iconValue : `bx-${iconValue}`;
+};
 
 export default function Raffle() {
   const [sidebarClosed, setSidebarClosed] = useState(true);
-  const [activeSection, setActiveSection] = useState(1);
+  const [activeSection, setActiveSection] = useState<string | number>('home');
   const [raffleRunning, setRaffleRunning] = useState<{ [key: number]: boolean }>({});
   const [currentWinner, setCurrentWinner] = useState<{ [key: number]: string }>({});
-  const [remainingItems, setRemainingItems] = useState<{ [key: number]: number }>({
-    40: 10,
-    41: 10,
-    42: 10,
-    43: 10,
-    44: 2,
-  });
+  const [remainingItems, setRemainingItems] = useState<{ [key: number]: number }>({});
   const [allWinners, setAllWinners] = useState<Winner[]>([]);
-  const [availableParticipants, setAvailableParticipants] = useState<string[]>([...MOCK_PARTICIPANTS]);
+  const [availableParticipants, setAvailableParticipants] = useState<string[]>([]);
   
   const raffleIntervals = useRef<{ [key: number]: any }>({});
   const rouletteSound = useRef<HTMLAudioElement | null>(null);
   const winnerSound = useRef<HTMLAudioElement | null>(null);
 
+  // Fetch data using your custom hooks with shorter stale time for real-time updates
+  const {
+    data: items = [],
+    isPending: isLoadingItems,
+    isError: isErrorItems,
+  } = useDynamicQuery(['FetchItems'], showItems, { 
+    staleTime: 30000, // 30 seconds
+    refetchOnWindowFocus: true,
+    refetchOnMount: true
+  });
+
+  const {
+    data: participants = [],
+    isPending: isLoadingParticipants,
+    isError: isErrorParticipants,
+  } = useDynamicQuery(['FetchParticipants'], showParticipants, { 
+    staleTime: 30000, // 30 seconds
+    refetchOnWindowFocus: true,
+    refetchOnMount: true
+  });
+
+  // Set up data when items and participants are loaded
   useEffect(() => {
-    // Initialize audio elements
+    if (items.length > 0) {
+      // Set up remaining items from database
+      const remainingItemsMap: { [key: number]: number } = {};
+      items.forEach(item => {
+        remainingItemsMap[item.id] = item.remaining;
+      });
+      setRemainingItems(remainingItemsMap);
+    }
+  }, [items]);
+
+  useEffect(() => {
+    if (participants.length > 0) {
+      // Set up available participants
+      const participantNames = participants.map(p => `${p.fullname} - ${p.position}`);
+      setAvailableParticipants(participantNames);
+    }
+  }, [participants]);
+
+  // Initialize audio elements
+  useEffect(() => {
     rouletteSound.current = new Audio('/sound/spin.mp3');
     winnerSound.current = new Audio('/sound/win.mp3');
     
@@ -65,7 +85,7 @@ export default function Raffle() {
     setSidebarClosed(!sidebarClosed);
   };
 
-  const toggleSection = (section: number) => {
+  const toggleSection = (section: number | string) => {
     setActiveSection(section);
   };
 
@@ -135,17 +155,51 @@ export default function Raffle() {
     }
   };
 
-  useEffect(() => {
-    // Initialize audio elements
-    rouletteSound.current = new Audio('/sound/spin.mp3');
-    winnerSound.current = new Audio('/sound/win.mp3');
-    
-    return () => {
-      Object.values(raffleIntervals.current).forEach(interval => {
-        if (interval) clearInterval(interval);
-      });
-    };
-  }, []);
+  // Show loading state
+  if (isLoadingItems || isLoadingParticipants) {
+    return (
+      <>
+        <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet' />
+        <div className={`sidebar ${sidebarClosed ? 'close' : ''}`}>
+          <div className="logo-details">
+            <i className='bx bx-menu' onClick={toggleSidebar}></i>
+            <span className="logo_name">ALFC Insurance</span>
+          </div>
+        </div>
+        <section className="home-section">
+          <div className="logo-center">
+            <img src="/image/alfclogo.png" width="250" height="100" alt="ALFC Logo" />
+          </div>
+          <div style={{ textAlign: 'center', marginTop: '50px' }}>
+            <h2>Loading...</h2>
+          </div>
+        </section>
+      </>
+    );
+  }
+
+  // Show error state
+  if (isErrorItems || isErrorParticipants) {
+    return (
+      <>
+        <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet' />
+        <div className={`sidebar ${sidebarClosed ? 'close' : ''}`}>
+          <div className="logo-details">
+            <i className='bx bx-menu' onClick={toggleSidebar}></i>
+            <span className="logo_name">ALFC Insurance</span>
+          </div>
+        </div>
+        <section className="home-section">
+          <div className="logo-center">
+            <img src="/image/alfclogo.png" width="250" height="100" alt="ALFC Logo" />
+          </div>
+          <div style={{ textAlign: 'center', marginTop: '50px' }}>
+            <h2>Error loading data. Please try again.</h2>
+          </div>
+        </section>
+      </>
+    );
+  }
 
   return (
     <>
@@ -158,7 +212,7 @@ export default function Raffle() {
         </div>
         <ul className="nav-links">
           <li>
-            <a onClick={() => toggleSection(1)}>
+            <a onClick={() => toggleSection('home')}>
               <i className='bx bxs-home'></i>
               <span className="link_name">Home</span>
             </a>
@@ -167,55 +221,17 @@ export default function Raffle() {
             </ul>
           </li>
 
-          <li>
-            <a onClick={() => toggleSection(40)} style={{height: '50px'}}>
-              <i className='bx bx-headphone'></i>
-              <span className="link_name">Wireless Earbuds</span>
-            </a>
-            <ul className="sub-menu blank">
-              <li><a className="link_name">Wireless Earbuds</a></li>
-            </ul>
-          </li>
-
-          <li>
-            <a onClick={() => toggleSection(41)} style={{height: '50px'}}>
-              <i className='bx bxs-battery-charging'></i>
-              <span className="link_name">Power Bank</span>
-            </a>
-            <ul className="sub-menu blank">
-              <li><a className="link_name">Power Bank</a></li>
-            </ul>
-          </li>
-
-          <li>
-            <a onClick={() => toggleSection(42)} style={{height: '50px'}}>
-              <i className='bx bx-volume-full'></i>
-              <span className="link_name">Blaupunkt BT Speaker</span>
-            </a>
-            <ul className="sub-menu blank">
-              <li><a className="link_name">Blaupunkt BT Speaker</a></li>
-            </ul>
-          </li>
-
-          <li>
-            <a onClick={() => toggleSection(43)} style={{height: '50px'}}>
-              <i className='bx bx-wind'></i>
-              <span className="link_name">Jaguar Handheld Fan</span>
-            </a>
-            <ul className="sub-menu blank">
-              <li><a className="link_name">Jaguar Handheld Fan</a></li>
-            </ul>
-          </li>
-
-          <li>
-            <a onClick={() => toggleSection(44)} style={{height: '50px'}}>
-              <i className='bx bx-timer'></i>
-              <span className="link_name">Air Fryer</span>
-            </a>
-            <ul className="sub-menu blank">
-              <li><a className="link_name">Air Fryer</a></li>
-            </ul>
-          </li>
+          {items.map((item) => (
+            <li key={item.id}>
+              <a onClick={() => toggleSection(item.id)} style={{height: '50px'}}>
+                <i className={`bx ${getIconClass(item.icon || '')}`}></i>
+                <span className="link_name">{item.item}</span>
+              </a>
+              <ul className="sub-menu blank">
+                <li><a className="link_name">{item.item}</a></li>
+              </ul>
+            </li>
+          ))}
         </ul>
       </div>
 
@@ -224,7 +240,7 @@ export default function Raffle() {
           <img src="/image/alfclogo.png" width="250" height="100" alt="ALFC Logo" />
         </div>
 
-        {activeSection === 1 && (
+        {activeSection === 'home' && (
           <div className="group" data-group="1" style={{marginTop: '10px'}}>
             <div className="group-content">
               <center>
@@ -232,151 +248,56 @@ export default function Raffle() {
                 <p style={{color: '#000', fontSize: '20px'}}>Available Participants: {availableParticipants.length}</p>
               </center>
             </div>
+            
+            {/* All Winners - only show on Home page */}
+            {allWinners.length > 0 && (
+              <div id="table-container" style={{marginTop: '50px'}}>
+                <h2>All Winners</h2>
+                <ul id="allWinners">
+                  {allWinners.map((winner, index) => (
+                    <li key={index} className="winner">
+                      Winner {index + 1}: {winner.name} - Item: {winner.item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         )}
 
-        {activeSection === 40 && (
-          <div className="raffle-content">
-            <div className="raffle-left">
-              <img src="/image/alfcraffle1.png" alt="Wireless Earbuds" className="raffle-item-image" />
-            </div>
-            <div className="raffle-right">
-              <div className="remaining-badge">
-                Remaining items: {remainingItems[40]}
+        {items.map((item) => (
+          activeSection === item.id && (
+            <div key={item.id} className="raffle-content">
+              <div className="raffle-left">
+                <img 
+                  src={item.image ? `/storage/${item.image}` : "/image/default-item.png"} 
+                  alt={item.item} 
+                  className="raffle-item-image" 
+                />
               </div>
-              
-              <h1 className="item-title">Proton Flex F1 True Wireless Earbuds</h1>
-              
-              <button 
-                className="button4" 
-                onClick={() => toggleRaffle(40, 'Proton Flex F1 True Wireless Earbuds')}
-              >
-                {raffleRunning[40] ? 'Stop' : 'Start'}
-              </button>
-              
-              <div className="winner-box">
-                {currentWinner[40] || 'And the Winner is..'}
+              <div className="raffle-right">
+                <div className="remaining-badge">
+                  Remaining items: {remainingItems[item.id] || 0}
+                </div>
+                
+                <h1 className="item-title">{item.item}</h1>
+                
+                <button 
+                  className="button4" 
+                  onClick={() => toggleRaffle(item.id, item.item)}
+                  disabled={remainingItems[item.id] <= 0}
+                >
+                  {raffleRunning[item.id] ? 'Stop' : 'Start'}
+                </button>
+                
+                <div className="winner-box">
+                  {currentWinner[item.id] || 'And the Winner is..'}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )
+        ))}
 
-        {activeSection === 41 && (
-          <div className="raffle-content">
-            <div className="raffle-left">
-              <img src="/image/alfcraffle2.png" alt="Power Bank" className="raffle-item-image" />
-            </div>
-            <div className="raffle-right">
-              <div className="remaining-badge">
-                Remaining items: {remainingItems[41]}
-              </div>
-              
-              <h1 className="item-title">Jaguar Electronics PB157 5000mAh Power Bank</h1>
-              
-              <button 
-                className="button4" 
-                onClick={() => toggleRaffle(41, 'Jaguar Electronics PB157 5000mAh Power Bank')}
-              >
-                {raffleRunning[41] ? 'Stop' : 'Start'}
-              </button>
-              
-              <div className="winner-box">
-                {currentWinner[41] || 'And the Winner is..'}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeSection === 42 && (
-          <div className="raffle-content">
-            <div className="raffle-left">
-              <img src="/image/alfcraffle3.png" alt="BT Speaker" className="raffle-item-image" />
-            </div>
-            <div className="raffle-right">
-              <div className="remaining-badge">
-                Remaining items: {remainingItems[42]}
-              </div>
-              
-              <h1 className="item-title">Blaupunkt BT Speaker with Active Subwoofer</h1>
-              
-              <button 
-                className="button4" 
-                onClick={() => toggleRaffle(42, 'Blaupunkt BT Speaker with Active Subwoofer')}
-              >
-                {raffleRunning[42] ? 'Stop' : 'Start'}
-              </button>
-              
-              <div className="winner-box">
-                {currentWinner[42] || 'And the Winner is..'}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeSection === 43 && (
-          <div className="raffle-content">
-            <div className="raffle-left">
-              <img src="/image/alfcraffle4.png" alt="Handheld Fan" className="raffle-item-image" />
-            </div>
-            <div className="raffle-right">
-              <div className="remaining-badge">
-                Remaining items: {remainingItems[43]}
-              </div>
-              
-              <h1 className="item-title">Jaguar Electronics PF02 Portable Handheld Fan</h1>
-              
-              <button 
-                className="button4" 
-                onClick={() => toggleRaffle(43, 'Jaguar Electronics PF02 Portable Handheld Fan')}
-              >
-                {raffleRunning[43] ? 'Stop' : 'Start'}
-              </button>
-              
-              <div className="winner-box">
-                {currentWinner[43] || 'And the Winner is..'}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeSection === 44 && (
-          <div className="raffle-content">
-            <div className="raffle-left">
-              <img src="/image/alfcraffle5.png" alt="Air Fryer" className="raffle-item-image" />
-            </div>
-            <div className="raffle-right">
-              <div className="remaining-badge">
-                Remaining items: {remainingItems[44]}
-              </div>
-              
-              <h1 className="item-title">Kazumi KZ50 6.5L Air Fryer</h1>
-              
-              <button 
-                className="button4" 
-                onClick={() => toggleRaffle(44, 'Kazumi KZ50 6.5L Air Fryer')}
-              >
-                {raffleRunning[44] ? 'Stop' : 'Start'}
-              </button>
-              
-              <div className="winner-box">
-                {currentWinner[44] || 'And the Winner is..'}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {allWinners.length > 0 && (
-          <div id="table-container" style={{marginTop: '50px'}}>
-            <h2>All Winners</h2>
-            <ul id="allWinners">
-              {allWinners.map((winner, index) => (
-                <li key={index} className="winner">
-                  Winner {index + 1}: {winner.name} - Item: {winner.item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
       </section>
     </>
   );

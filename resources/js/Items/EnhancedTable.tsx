@@ -241,7 +241,7 @@ export default function EnhancedTable() {
         isPending: isPending_items,
         isError: isError_items,
     } = useDynamicQuery( 
-        ['Fetchitems'],
+        ['FetchItems'],
         showItems 
     );
 

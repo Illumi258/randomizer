@@ -6,11 +6,17 @@ import { HandleRequestError } from "@/utils/handleRequestError";
 export default function useDeleteParticipant() {
     const { showToast } = useToast();
 
+    const fetchParticipants = [
+            'FetchParticipants',
+            'FetchParticipantsInFrontEnd'
+    ];
+
+
     const {
-        mutate: deleteParticipantMutation,
+        mutate: deleteParticipantMutation, 
         isPending: isPendingDelete
     } = useDynamicMutation({
-        mutationKey: ['FetchParticipants'],
+        mutationKey: fetchParticipants ,
         mutationFn: (id: number) => deleteParticipant(id),
         onSuccess: () => {
             showToast({

@@ -12,7 +12,13 @@ export default function usePostParticipant(onClose: () => void, onSuccess?: () =
     const inputRef = useRef<HTMLInputElement>(null);
     const queryClient = useQueryClient();
 
+      const fetchParticipants = [
+        'FetchParticipants',
+        'FetchParticipantsInFrontEnd'
+    ];
+
     const createParticipantMutation = useMutation({
+        mutationKey: fetchParticipants,
         mutationFn: postParticipants,
         onSuccess: (data) => {
             if (data.success) {
@@ -30,6 +36,7 @@ export default function usePostParticipant(onClose: () => void, onSuccess?: () =
                 
                 // Refresh data
                 queryClient.invalidateQueries({ queryKey: ['FetchParticipants'] });
+                queryClient.invalidateQueries({ queryKey: ['FetchParticipantsInFrontEnd'] });
                 
                 onClose();
                 onSuccess?.();

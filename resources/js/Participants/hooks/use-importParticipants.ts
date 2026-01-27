@@ -4,15 +4,20 @@ import { useToast } from '@/utils/use-toast';
 
 export default function useImportParticipants() {
   const { showToast } = useToast();
+  
+    const fetchParticipants = [
+        'FetchParticipants',
+        'FetchParticipantsInFrontEnd'
+    ];
 
   const importParticipantsMutation = useDynamicMutation({
     mutationFn: importParticipants,
-    mutationKey: ['FetchParticipants'], // This will auto-invalidate the participants list
+    mutationKey: fetchParticipants, // This will auto-invalidate the participants list
     onSuccess: (data: any) => {
       if (data.success) {
         showToast({
           message: data.message,
-          type: 'success'
+          type: 'success' 
         });
         if (data.errors && data.errors.length > 0) {
           data.errors.forEach((error: string) => 

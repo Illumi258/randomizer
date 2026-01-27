@@ -18,7 +18,10 @@ export default function usePutParticipant(
 
     const {fullname, position, setFullname, setPosition, resetForm} = useParticipantsStore();
 
-    const fetchSavings = ['FetchParticipants'];
+    const fetchParticipants = [
+        'FetchParticipants',
+        'FetchParticipantsInFrontEnd'
+    ];
 
     useEffect(() => {
         if (initialData) {
@@ -35,7 +38,7 @@ export default function usePutParticipant(
         mutate: UpdateParticipantMutation,
         isPending: isPendingUpdateParticipantMutation
     } = useDynamicMutation({
-        mutationKey: fetchSavings,
+        mutationKey: fetchParticipants,
         mutationFn: (payload: SavingParticipantsData & { id: number}) => putParticipants(payload),
         onSuccess: () => {
             showToast({

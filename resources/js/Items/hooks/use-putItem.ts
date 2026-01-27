@@ -18,7 +18,8 @@ export default function usePutItem(
     const {item, remaining, image, icon, setitem, setremaining, setimage, seticon, resetForm} = useItemsStore();
 
          const fetchSavings = [
-        'Fetchitems'
+        'FetchItems',
+        'FetchItemsInFrontEnd'
     ];
 
       useEffect(() => {

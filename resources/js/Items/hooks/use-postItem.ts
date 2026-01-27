@@ -14,7 +14,8 @@ export default function usePostItem(onCloseDialog: () => void, onReOpenDialog: (
     const {item, remaining, image, icon, setitem, setremaining, setimage, seticon, resetForm} = useItemsStore();
 
     const fetchSavings = [
-        'Fetchitems'
+        'FetchItems',
+        'FetchItemsInFrontEnd'
     ];
 
     const [errors, setErrors] = useState<Partial<Record<keyof ItemForm, string>>>();
