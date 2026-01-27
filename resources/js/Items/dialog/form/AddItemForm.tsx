@@ -1,8 +1,10 @@
-import React from 'react';
-import { TextField, Box, Paper, Typography, IconButton, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import React, { useState } from 'react';
+import { TextField, Box, Paper, Typography, IconButton, FormControl, InputLabel, Select, MenuItem, Button, LinearProgress, Alert } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import { ItemForm } from '@/Items/validations/use-ItemStoreValidationSchema';
+import { removeImageBackground } from '@/utils/backgroundRemoval';
 
 interface AddItemFormProps {
     item: string;
@@ -40,9 +42,39 @@ export default function AddItemForm({
     onIconChange,
     inputRef,
 }: AddItemFormProps) {
+    const [isProcessingBg, setIsProcessingBg] = useState(false);
+    const [bgRemovalProgress, setBgRemovalProgress] = useState(0);
+    const [bgRemovalError, setBgRemovalError] = useState<string | null>(null);
+
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
+        setBgRemovalError(null);
         onImageChange(file);
+    };
+
+    const handleRemoveBackground = async () => {
+        if (!image) return;
+
+        setIsProcessingBg(true);
+        setBgRemovalProgress(0);
+        setBgRemovalError(null);
+
+        try {
+            const processedImage = await removeImageBackground(image, {
+                onProgress: (progress) => {
+                    setBgRemovalProgress(Math.round(progress * 100));
+                },
+                quality: 'medium'
+            });
+            
+            onImageChange(processedImage);
+        } catch (error) {
+            setBgRemovalError('Failed to remove background. Please try again.');
+            console.error('Background removal error:', error);
+        } finally {
+            setIsProcessingBg(false);
+            setBgRemovalProgress(0);
+        }
     };
 
     return (
@@ -173,15 +205,48 @@ export default function AddItemForm({
                                     {(image.size / 1024).toFixed(2)} KB
                                 </Typography>
                             </Box>
-                            <IconButton
-                                size="small"
-                                color="error"
-                                onClick={() => onImageChange(null)}
-                                disabled={isLoading}
-                            >
-                                <DeleteIcon />
-                            </IconButton>
+                            <Box sx={{ display: 'flex', gap: 1 }}>
+                                <Button
+                                    size="small"
+                                    variant="outlined"
+                                    startIcon={<AutoFixHighIcon />}
+                                    onClick={handleRemoveBackground}
+                                    disabled={isLoading || isProcessingBg}
+                                    sx={{ minWidth: 'auto' }}
+                                >
+                                    Remove BG
+                                </Button>
+                                <IconButton
+                                    size="small"
+                                    color="error"
+                                    onClick={() => onImageChange(null)}
+                                    disabled={isLoading || isProcessingBg}
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Box>
                         </Paper>
+
+                        {/* Background Removal Progress */}
+                        {isProcessingBg && (
+                            <Box sx={{ mt: 1 }}>
+                                <Typography variant="caption" sx={{ color: '#666', mb: 0.5, display: 'block' }}>
+                                    Removing background... {bgRemovalProgress}%
+                                </Typography>
+                                <LinearProgress 
+                                    variant="determinate" 
+                                    value={bgRemovalProgress} 
+                                    sx={{ height: 4, borderRadius: 2 }}
+                                />
+                            </Box>
+                        )}
+
+                        {/* Background Removal Error */}
+                        {bgRemovalError && (
+                            <Alert severity="error" sx={{ mt: 1 }}>
+                                {bgRemovalError}
+                            </Alert>
+                        )}
                     </Box>
                 )}
             </Box>

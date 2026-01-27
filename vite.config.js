@@ -21,4 +21,17 @@ export default defineConfig({
       usePolling: true,
     },
   },
+  optimizeDeps: {
+    exclude: ['@imgly/background-removal'],
+  },
+  build: {
+    rollupOptions: {
+      external: (id) => {
+        // Handle potential issues with background removal library
+        if (id.includes('@imgly/background-removal')) {
+          return false;
+        }
+      }
+    }
+  }
 });

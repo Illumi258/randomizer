@@ -15,7 +15,7 @@ export default function Authenticated({
     activeTab?: string;
     setActiveTab?: (tab: string) => void;
 }>) {
-    const user = usePage<{ auth: { user: { id: number; name: string; email: string; email_verified_at: string | null } } }>().props.auth.user;
+    const user = usePage<{ auth: { user: { id: number; name: string; email: string; email_verified_at: string | undefined } } }>().props.auth.user;
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false); 
