@@ -15,6 +15,9 @@ export const putItems = async(payload: SavingItemsData & { id: number }): Promis
     if (payload.image) {
         formData.append('image', payload.image);
     }
+    if (payload.icon) {
+        formData.append('icon', payload.icon);
+    }
     formData.append('_method', 'PUT');
 
     const response = await api.post(route('items.UpdateItems', { id: payload.id }), formData, {

@@ -12,9 +12,11 @@ export default function AddItemDialog({ open, onClose }: AddItemDialogProps) {
         item,
         remaining,
         image,
+        icon,
         setitem,
         setremaining,
         setimage,
+        seticon,
         handleSubmit,
         inputRef,
         errors,
@@ -39,11 +41,13 @@ export default function AddItemDialog({ open, onClose }: AddItemDialogProps) {
                 item={item}
                 remaining={remaining}
                 image={image}
+                icon={icon}
                 errors={errors}
                 isLoading={isPendingCreateItemMutation}
                 onItemChange={setitem}
                 onRemainingChange={setremaining}
                 onImageChange={setimage}
+                onIconChange={seticon}
                 inputRef={inputRef}
             />
         </ReusableDialog>

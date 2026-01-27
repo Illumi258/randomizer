@@ -142,6 +142,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                         </TableSortLabel>
                     </TableCell>
                 ))}
+                <TableCell align="center">Icon</TableCell>
                 <TableCell align="center">Image</TableCell>
                 <TableCell align="center">Actions</TableCell>
             </TableRow>
@@ -400,6 +401,16 @@ export default function EnhancedTable() {
                                         <TableCell align="right">{row.remaining}</TableCell>
                                         <TableCell align="right">{row.reedem}</TableCell>
                                         {/* <TableCell align="left">{row.status}</TableCell> */}
+                                        <TableCell align="center">
+                                            {row.icon ? (
+                                                <div>
+                                                    <i className={`bx ${row.icon}`} style={{ fontSize: '24px', color: '#1976d2' }} />
+                                                    <div style={{ fontSize: '10px', color: '#666' }}>({row.icon})</div>
+                                                </div>
+                                            ) : (
+                                                <span style={{ color: '#999', fontSize: '12px' }}>No Icon</span>
+                                            )}
+                                        </TableCell>
                                         <TableCell align="center">
                                             <Avatar
                                                 src={row.image ? `${window.location.origin}/storage/${row.image}` : undefined}

@@ -15,7 +15,8 @@ class FetchItemsServices {
                 'remaining',
                 'reedem',
                 'status',
-                'image'
+                'image',
+                'icon'
             )
            ->get();
 

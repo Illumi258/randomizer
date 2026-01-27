@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, Box, Paper, Typography, IconButton } from '@mui/material';
+import { TextField, Box, Paper, Typography, IconButton, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ItemForm } from '@/Items/validations/use-ItemStoreValidationSchema';
@@ -8,23 +8,36 @@ interface AddItemFormProps {
     item: string;
     remaining: number;
     image: File | null;
+    icon: string;
     errors?: Partial<Record<keyof ItemForm, string>>;
     isLoading?: boolean;
     onItemChange: (value: string) => void;
     onRemainingChange: (value: number) => void;
     onImageChange: (file: File | null) => void;
+    onIconChange: (value: string) => void;
     inputRef?: React.RefObject<HTMLInputElement>;
 }
+
+// Icon options from Raffle page
+const ICON_OPTIONS = [
+    { value: 'bx-headphone', label: 'Headphone (Wireless Earbuds)', icon: 'bx bx-headphone' },
+    { value: 'bxs-battery-charging', label: 'Battery (Power Bank)', icon: 'bx bxs-battery-charging' },
+    { value: 'bx-volume-full', label: 'Speaker (BT Speaker)', icon: 'bx bx-volume-full' },
+    { value: 'bx-wind', label: 'Wind (Handheld Fan)', icon: 'bx bx-wind' },
+    { value: 'bx-timer', label: 'Timer (Air Fryer)', icon: 'bx bx-timer' },
+];
 
 export default function AddItemForm({
     item,
     remaining,
     image,
+    icon,
     errors,
     isLoading = false,
     onItemChange,
     onRemainingChange,
     onImageChange,
+    onIconChange,
     inputRef,
 }: AddItemFormProps) {
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,6 +76,29 @@ export default function AddItemForm({
                 variant="outlined"
                 size="medium"
             />
+
+            {/* Icon Selection */}
+            <FormControl fullWidth variant="outlined" size="medium">
+                <InputLabel>Select Icon</InputLabel>
+                <Select
+                    value={icon}
+                    onChange={(e) => onIconChange(e.target.value)}
+                    label="Select Icon"
+                    disabled={isLoading}
+                >
+                    <MenuItem value="">
+                        <em>No Icon</em>
+                    </MenuItem>
+                    {ICON_OPTIONS.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <i className={option.icon} style={{ fontSize: '18px' }} />
+                                {option.label}
+                            </Box>
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
 
             {/* Image Upload */}
             <Box>

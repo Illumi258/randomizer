@@ -15,10 +15,9 @@ export default function usePutItem(
     const {showToast} = useToast();
     const inputRef = useRef<HTMLInputElement>(null);
 
-       const {item, remaining, image, setitem, setremaining, setimage, resetForm} = useItemsStore();
+    const {item, remaining, image, icon, setitem, setremaining, setimage, seticon, resetForm} = useItemsStore();
 
          const fetchSavings = [
-        'prize',
         'Fetchitems'
     ];
 
@@ -26,12 +25,13 @@ export default function usePutItem(
         if (initialData) {
             setitem(initialData.item);
             setremaining(initialData.remaining);
+            seticon(initialData.icon || '');
             // Note: image from DB is string URL, not File
             // You'll need to handle this differently
         } else {
             resetForm();
         }
-    }, [initialData, setitem, setremaining, resetForm]);
+    }, [initialData, setitem, setremaining, seticon, resetForm]);
 
     const [errors, setErrors] = useState<Partial<Record<keyof ItemForm, string>>>();
 
@@ -69,7 +69,7 @@ export default function usePutItem(
             return;
         }
 
-        const result = storeItemSchema.safeParse({ item, remaining, image });
+        const result = storeItemSchema.safeParse({ item, remaining, image, icon });
         if (!result.success) {
             const fieldErrors: typeof errors = {};
             result.error.issues.forEach((err: any) => {
@@ -86,9 +86,11 @@ export default function usePutItem(
         item,
         remaining,
         image,
+        icon,
         setitem,
         setremaining,
         setimage,
+        seticon,
         handleSubmit,
         inputRef,
         errors,

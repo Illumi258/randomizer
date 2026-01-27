@@ -22,6 +22,11 @@ class UpdateItemsServices {
             'remaining' => $data['remaining']
         ];
 
+        // Handle icon update
+        if (isset($data['icon'])) {
+            $updateData['icon'] = $data['icon'];
+        }
+
         // Handle image upload if present
         if (isset($data['image']) && $data['image']) {
             // Delete old image if exists

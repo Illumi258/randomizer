@@ -11,7 +11,7 @@ export default function usePostItem(onCloseDialog: () => void, onReOpenDialog: (
     const {showToast} = useToast();
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const {item, remaining, image, setitem, setremaining, setimage, resetForm} = useItemsStore();
+    const {item, remaining, image, icon, setitem, setremaining, setimage, seticon, resetForm} = useItemsStore();
 
     const fetchSavings = [
         'Fetchitems'
@@ -44,7 +44,7 @@ export default function usePostItem(onCloseDialog: () => void, onReOpenDialog: (
     });
 
     const handleSubmit = async () => {
-        const result = storeItemSchema.safeParse({ item, remaining, image });
+        const result = storeItemSchema.safeParse({ item, remaining, image, icon });
         if (!result.success) {
             const fieldErrors: typeof errors = {};
             result.error.issues.forEach((err) => {
@@ -61,9 +61,11 @@ export default function usePostItem(onCloseDialog: () => void, onReOpenDialog: (
         item,
         remaining,
         image,
+        icon,
         setitem,
         setremaining,
         setimage,
+        seticon,
         handleSubmit,
         inputRef,
         errors,

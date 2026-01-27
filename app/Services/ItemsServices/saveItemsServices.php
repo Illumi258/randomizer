@@ -18,6 +18,11 @@ class saveItemsServices {
             'status' => 'active', // Add default status
         ];
 
+        // Handle icon selection
+        if (isset($items['icon']) && $items['icon']) {
+            $data['icon'] = $items['icon'];
+        }
+
         // Handle image upload
         if (isset($items['image']) && $items['image']) {
             $imagePath = $items['image']->store('items', 'public');

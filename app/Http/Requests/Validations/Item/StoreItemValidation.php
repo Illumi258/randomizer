@@ -10,7 +10,8 @@ class StoreItemValidation extends FormRequest {
         return [
              'item' =>  'required|max:50',
              'remaining' =>  'required|numeric|between:0,9999999999.99',
-             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+             'icon' => 'nullable|string|max:50'
         ];
     }
 

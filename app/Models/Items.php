@@ -16,6 +16,7 @@ class Items extends Model {
         'reedem',
         'status',
         'image',
+        'icon',
      ];
 
 }

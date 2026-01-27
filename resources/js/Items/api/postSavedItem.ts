@@ -15,6 +15,9 @@ export const postItems = async(payload: SavingItemsData): Promise<SavingResponse
     if (payload.image) {
         formData.append('image', payload.image);
     }
+    if (payload.icon) {
+        formData.append('icon', payload.icon);
+    }
 
     const response = await api.post(route('items.SaveItems'), formData, {
         headers: {
