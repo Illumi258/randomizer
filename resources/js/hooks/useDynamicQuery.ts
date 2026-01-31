@@ -21,6 +21,7 @@ const useDynamicQuery = <TData, TError = unknown>(
         queryFn,
         staleTime: options?.staleTime ?? 1000 * 60 * 5, 
         enabled: options?.enabled ?? true,
+        refetchInterval: options?.refetchInterval ?? 5000, // Auto refetch every 5 seconds
         ...options,
     });
 };

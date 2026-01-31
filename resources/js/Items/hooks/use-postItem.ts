@@ -1,4 +1,5 @@
 import { useRef, useState } from "react"
+import { useQueryClient } from '@tanstack/react-query';
 import { useDynamicMutation } from '@/hooks/useDynamicMutation';
 import { useToast } from "@/utils/use-toast";
 
@@ -7,8 +8,12 @@ import { SavingItemsData, useItemsStore }  from '@/Items/types/index'; // FROM T
 import { storeItemSchema, ItemForm } from '@/Items/validations/use-ItemStoreValidationSchema'; // FROM SCHEMA
 import { HandleRequestError } from "@/utils/handleRequestError";
 
+
+
+
 export default function usePostItem(onCloseDialog: () => void, onReOpenDialog: () => void){
     const {showToast} = useToast();
+    const queryClient = useQueryClient();
     const inputRef = useRef<HTMLInputElement>(null);
 
     const {item, remaining, image, icon, setitem, setremaining, setimage, seticon, resetForm} = useItemsStore();
@@ -32,6 +37,8 @@ export default function usePostItem(onCloseDialog: () => void, onReOpenDialog: (
                 type: 'success'
             });
             resetForm();
+            queryClient.invalidateQueries({ queryKey: fetchSavings });
+            
             setErrors({});
             inputRef.current?.focus();
             onCloseDialog();

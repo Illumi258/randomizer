@@ -34,9 +34,7 @@ export default function Raffle() {
     isPending: isLoadingItems,
     isError: isErrorItems,
   } = useDynamicQuery(['FetchItems'], showItems, { 
-    staleTime: 30000, // 30 seconds
-    refetchOnWindowFocus: true,
-    refetchOnMount: true
+    refetchInterval: 5000, // Override default 5s with 3s if needed
   });
 
   const {
@@ -44,9 +42,7 @@ export default function Raffle() {
     isPending: isLoadingParticipants,
     isError: isErrorParticipants,
   } = useDynamicQuery(['FetchParticipants'], showParticipants, { 
-    staleTime: 30000, // 30 seconds
-    refetchOnWindowFocus: true,
-    refetchOnMount: true
+    enabled:false
   });
 
   // Set up data when items and participants are loaded
