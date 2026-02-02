@@ -43,6 +43,11 @@ class ParticipantsController extends Controller
         return response()->json($result);
     }
 
+    public function showParticipantsWithoutItem(FetchParticipantsServices $services){
+        $result = $services->fetchParticipantNotCurrentlyWinner();
+        return response()->json($result);
+    }
+
     public function deleteParticipant($id, SoftDeleteParticipantsServices $services)
     {
         $result = $services->updateStatus($id);

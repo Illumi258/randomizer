@@ -23,6 +23,7 @@ Route::get('/items',[ItemsController::class, 'showItem'])->name('RaffleItems');
 Route::put('/items/Remaining',[ItemsController::class, 'updateRemainingItems'])->name('UpdateRemaining');
 
 Route::get('/participants',[ParticipantsController::class, 'showParticipants'])->name('ParticipantsRaffle');
+Route::get('/participants',[ParticipantsController::class, 'showParticipantsWithoutItem'])->name('ParticipantsWithoutItem');
 Route::put('/participants/Redeem',[ParticipantsController::class, 'updateRedeemedItems'])->name('RedeemedItem');
 
 Route::middleware('auth')->group(function () {

@@ -1,7 +1,8 @@
 import '../../css/raffle.css';
 import { useState, useEffect, useRef } from 'react';
 import { showRaffleItems } from '@/Raffle/api/getItemsRaffle';
-import { showRaffleParticipants } from '@/Raffle/api/getParticipants';
+// import { showRaffleParticipants } from '@/Raffle/api/getParticipants';
+import { showRaffleParticipantsWithoutItem } from '@/Raffle//api/getParticipantsWithoutItem';
 import useDynamicQuery from '@/hooks/useDynamicQuery';
 
 import useRedeemParticipant from '@/Raffle/hooks/useRedeemParticipants'
@@ -47,7 +48,7 @@ export default function Raffle() {
     data: participants = [],
     isPending: isLoadingParticipants,
     isError: isErrorParticipants,
-  } = useDynamicQuery(['FetchParticipants'], showRaffleParticipants, { 
+  } = useDynamicQuery(['FetchParticipants'], showRaffleParticipantsWithoutItem, { 
     // enabled:false
   });
 

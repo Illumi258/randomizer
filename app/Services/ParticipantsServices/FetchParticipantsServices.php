@@ -23,4 +23,25 @@ class FetchParticipantsServices {
                 'data' => $participants
            ];
     }
+
+
+    public function fetchParticipantNotCurrentlyWinner(){
+
+         $participants = Participants::select(
+                'id',
+                'fullname',
+                'position',
+                'redeemed_item',
+                'status'
+            )
+           ->where('status', 'active')
+           ->whereNull('redeemed_item')
+           ->get();
+           
+           return [
+                'success' => true,
+                'data' => $participants
+           ];
+        
+    }
 }
