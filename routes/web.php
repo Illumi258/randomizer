@@ -19,6 +19,9 @@ Route::get('/items', function () {
     return Inertia::render('Items');
 })->name('items');
 
+Route::get('/items',[ItemsController::class, 'showItem'])->name('RaffleItems');
+Route::get('/participants',[ParticipantsController::class, 'showParticipants'])->name('ParticipantsRaffle');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

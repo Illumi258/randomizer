@@ -1,7 +1,7 @@
 import '../../css/raffle.css';
 import { useState, useEffect, useRef } from 'react';
-import { showItems } from '@/Items/api/getItems';
-import { showParticipants } from '@/Participants/api/getParticipants';
+import { showRaffleItems } from '@/Raffle/api/getItemsRaffle';
+import { showRaffleParticipants } from '@/Raffle/api/getParticipants';
 import useDynamicQuery from '@/hooks/useDynamicQuery';
 
 interface Winner {
@@ -33,7 +33,7 @@ export default function Raffle() {
     data: items = [],
     isPending: isLoadingItems,
     isError: isErrorItems,
-  } = useDynamicQuery(['FetchItems'], showItems, { 
+  } = useDynamicQuery(['FetchItems'], showRaffleItems, { 
     refetchInterval: 5000, // Override default 5s with 3s if needed
   });
 
@@ -41,8 +41,8 @@ export default function Raffle() {
     data: participants = [],
     isPending: isLoadingParticipants,
     isError: isErrorParticipants,
-  } = useDynamicQuery(['FetchParticipants'], showParticipants, { 
-    enabled:false
+  } = useDynamicQuery(['FetchParticipants'], showRaffleParticipants, { 
+    // enabled:false
   });
 
   // Set up data when items and participants are loaded
