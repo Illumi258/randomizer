@@ -3,13 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\Participants\ParticipantsRequest;
+use App\Http\Requests\Validations\Participants\UpdateRedeemedItemRequest;
+
 use App\Services\ParticipantsServices\SaveParticipantsServices;
 use App\Services\ParticipantsServices\FetchParticipantsServices;
 use App\Services\ParticipantsServices\SoftDeleteParticipantsServices;
 use App\Services\ParticipantsServices\UpdateParticipantsServices;
 use App\Services\ParticipantsServices\ExportParticipantsServices;
 use App\Services\ParticipantsServices\ImportParticipantsServices;
-use App\Http\Requests\ParticipantsRequest;
+use App\Services\ParticipantsServices\SaveWinnerParticipants;
+
 
 class ParticipantsController extends Controller
 {
@@ -64,13 +68,17 @@ class ParticipantsController extends Controller
         return response()->json($result, 500);
     }
 
-    public function importParticipants(Request $request, ImportParticipantsServices $services)
-    {
+    public function importParticipants(Request $request, ImportParticipantsServices $services){
         $request->validate([
             'file' => 'required|file|mimes:csv,txt|max:2048'
         ]);
 
         $result = $services->importParticipants($request->file('file'));
+        return response()->json($result);
+    }
+
+    public function updateRedeemedItems(UpdateRedeemedItemRequest $request, SaveWinnerParticipants $services){
+        $result = $services->updateReedemedItem($request->validated());
         return response()->json($result);
     }
 }

@@ -4,6 +4,9 @@ import { showRaffleItems } from '@/Raffle/api/getItemsRaffle';
 import { showRaffleParticipants } from '@/Raffle/api/getParticipants';
 import useDynamicQuery from '@/hooks/useDynamicQuery';
 
+import useRedeemParticipant from '@/Raffle/hooks/useRedeemParticipants'
+import useUpdateRemaining from '@/Raffle/hooks/useUpdateRemaining'
+
 interface Winner {
   name: string;
   item: string;
@@ -27,6 +30,9 @@ export default function Raffle() {
   const raffleIntervals = useRef<{ [key: number]: any }>({});
   const rouletteSound = useRef<HTMLAudioElement | null>(null);
   const winnerSound = useRef<HTMLAudioElement | null>(null);
+
+  const { saveWinner, isSavingWinner } = useRedeemParticipant();
+  const { updateRemaining, isUpdatingRemaining } = useUpdateRemaining();
 
   // Fetch data using your custom hooks with shorter stale time for real-time updates
   const {
@@ -131,13 +137,34 @@ export default function Raffle() {
 
       const winnerName = currentWinner[group];
       if (winnerName) {
+        // Find the participant ID from the winner name
+        const participant = participants.find(p => `${p.fullname} - ${p.position}` === winnerName);
+        
+        console.log('Winner name:', winnerName);
+        console.log('Found participant:', participant);
+        console.log('All participants:', participants);
+        
+        if (participant) {
+          // Save the winner with the redeemed item
+          const winnerData = {
+            id: participant.id,
+            redeemed_item: itemName
+          };
+          console.log('Saving winner data:', winnerData);
+          saveWinner(winnerData);
+
+          // Update remaining items in backend
+          updateRemaining({ id: group });
+        } else {
+          console.error('Participant not found for winner:', winnerName);
+        }
+
         setAllWinners(prev => [...prev, { name: winnerName, item: itemName }]);
         setAvailableParticipants(prev => prev.filter(p => p !== winnerName));
         setRemainingItems(prev => ({
           ...prev,
           [group]: Math.max(0, (prev[group] || 0) - 1)
         }));
-        console.log('Winner selected:', winnerName);
       }
     }
   };
@@ -281,9 +308,9 @@ export default function Raffle() {
                 <button 
                   className="button4" 
                   onClick={() => toggleRaffle(item.id, item.item)}
-                  disabled={remainingItems[item.id] <= 0}
+                  disabled={remainingItems[item.id] <= 0 || isSavingWinner || isUpdatingRemaining}
                 >
-                  {raffleRunning[item.id] ? 'Stop' : 'Start'}
+                  {isSavingWinner || isUpdatingRemaining ? 'Saving...' : raffleRunning[item.id] ? 'Stop' : 'Start'}
                 </button>
                 
                 <div className="winner-box">

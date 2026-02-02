@@ -20,7 +20,10 @@ Route::get('/items', function () {
 })->name('items');
 
 Route::get('/items',[ItemsController::class, 'showItem'])->name('RaffleItems');
+Route::put('/items/Remaining',[ItemsController::class, 'updateRemainingItems'])->name('UpdateRemaining');
+
 Route::get('/participants',[ParticipantsController::class, 'showParticipants'])->name('ParticipantsRaffle');
+Route::put('/participants/Redeem',[ParticipantsController::class, 'updateRedeemedItems'])->name('RedeemedItem');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -34,6 +37,7 @@ Route::middleware('auth')->group(function () {
         ->group(function () {
             Route::post('/', 'addItems')->name('SaveItems');
             Route::get('show/items', 'showItem')->name('ShowItems');
+            // Route::put('update/remaining', 'updateRemainingItems')->name('UpdateRemaining');
             // Route::get('/{id}', 'show')->name('show');
             Route::put('/{id}', 'updateItems')->name('UpdateItems');
             Route::delete('/{id}', 'deleteItem')->name('DestroyItem');
@@ -46,10 +50,12 @@ Route::middleware('auth')->group(function () {
         ->group(function () {
             Route::post('/', 'store')->name('SaveParticipants');
             Route::get('show/participants', 'showParticipants')->name('ShowParticipants');
+      
             Route::put('/{id}', 'updateParticipants')->name('UpdateParticipants');
             Route::delete('/{id}', 'deleteParticipant')->name('DestroyParticipant');
             Route::get('export', 'exportParticipants')->name('ExportParticipants');
             Route::post('import', 'importParticipants')->name('ImportParticipants');
+            
         });
 });
 
