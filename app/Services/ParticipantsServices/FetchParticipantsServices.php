@@ -35,9 +35,12 @@ class FetchParticipantsServices {
                 'status'
             )
            ->where('status', 'active')
-           ->whereNull('redeemed_item')
+            ->where(fn ($q) =>
+            $q->whereNull('redeemed_item')
+              ->orWhere('redeemed_item', '')
+        )
            ->get();
-           
+
            return [
                 'success' => true,
                 'data' => $participants
