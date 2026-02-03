@@ -47,4 +47,25 @@ class FetchParticipantsServices {
            ];
         
     }
+
+    public function fetchWinners(){
+
+    $participants = Participants::select(
+        'id',
+        'fullname',
+        'position',
+        'redeemed_item',
+        'status'
+    )
+        ->where('status', 'active')
+        ->whereNotNull('redeemed_item')
+        ->where('redeemed_item', '!=', '')
+        ->get();
+
+    return [
+        'success' => true,
+        'data' => $participants
+    ];
+}
+
 }

@@ -1,17 +1,12 @@
 import '../../css/raffle.css';
 import { useState, useEffect, useRef } from 'react';
 import { showRaffleItems } from '@/Raffle/api/getItemsRaffle';
-// import { showRaffleParticipants } from '@/Raffle/api/getParticipants';
+import { showWinners } from '@/Raffle/api/getParticipants';
 import { showRaffleParticipantsWithoutItem } from '@/Raffle//api/getParticipantsWithoutItem';
 import useDynamicQuery from '@/hooks/useDynamicQuery';
 
 import useRedeemParticipant from '@/Raffle/hooks/useRedeemParticipants'
 import useUpdateRemaining from '@/Raffle/hooks/useUpdateRemaining'
-
-interface Winner {
-  name: string;
-  item: string;
-}
 
 // Icon mapping - directly use the stored icon values
 const getIconClass = (iconValue: string) => {
@@ -25,7 +20,6 @@ export default function Raffle() {
   const [raffleRunning, setRaffleRunning] = useState<{ [key: number]: boolean }>({});
   const [currentWinner, setCurrentWinner] = useState<{ [key: number]: string }>({});
   const [remainingItems, setRemainingItems] = useState<{ [key: number]: number }>({});
-  const [allWinners, setAllWinners] = useState<Winner[]>([]);
   const [availableParticipants, setAvailableParticipants] = useState<string[]>([]);
   
   const raffleIntervals = useRef<{ [key: number]: any }>({});
@@ -50,6 +44,14 @@ export default function Raffle() {
     isError: isErrorParticipants,
   } = useDynamicQuery(['FetchParticipants'], showRaffleParticipantsWithoutItem, { 
     // enabled:false
+  });
+
+  const {
+    data: winners = [],
+    isPending: isLoadingWinners,
+    isError: isErrorWinners,
+  } = useDynamicQuery(['FetchWinners'], showWinners, { 
+    refetchInterval: 5000, // Refetch winners every 5 seconds to get latest data
   });
 
   // Set up data when items and participants are loaded
@@ -160,7 +162,6 @@ export default function Raffle() {
           console.error('Participant not found for winner:', winnerName);
         }
 
-        setAllWinners(prev => [...prev, { name: winnerName, item: itemName }]);
         setAvailableParticipants(prev => prev.filter(p => p !== winnerName));
         setRemainingItems(prev => ({
           ...prev,
@@ -180,7 +181,7 @@ export default function Raffle() {
   };
 
   // Show loading state
-  if (isLoadingItems || isLoadingParticipants) {
+  if (isLoadingItems || isLoadingParticipants || isLoadingWinners) {
     return (
       <>
         <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet' />
@@ -203,7 +204,7 @@ export default function Raffle() {
   }
 
   // Show error state
-  if (isErrorItems || isErrorParticipants) {
+  if (isErrorItems || isErrorParticipants || isErrorWinners) {
     return (
       <>
         <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet' />
@@ -273,14 +274,14 @@ export default function Raffle() {
               </center>
             </div>
             
-            {/* All Winners - only show on Home page */}
-            {allWinners.length > 0 && (
+            {/* All Winners - show winners from API */}
+            {winners.length > 0 && (
               <div id="table-container" style={{marginTop: '50px'}}>
                 <h2>All Winners</h2>
                 <ul id="allWinners">
-                  {allWinners.map((winner, index) => (
-                    <li key={index} className="winner">
-                      Winner {index + 1}: {winner.name} - Item: {winner.item}
+                  {winners.map((winner, index) => (
+                    <li key={winner.id} className="winner">
+                      Winner {index + 1}: {winner.fullname} - {winner.position} - Item: {winner.redeemed_item}
                     </li>
                   ))}
                 </ul>

@@ -37,10 +37,14 @@ class ParticipantsController extends Controller
         }
     }
 
-    public function showParticipants(FetchParticipantsServices $services)
-    {
+    public function showParticipants(FetchParticipantsServices $services){
         $result = $services->fetchParticipants();
         return response()->json($result);
+    }
+
+    public function showWInners(FetchParticipantsServices $services){
+    $result = $services->fetchWinners();
+    return response()->json($result);
     }
 
     public function showParticipantsWithoutItem(FetchParticipantsServices $services){
