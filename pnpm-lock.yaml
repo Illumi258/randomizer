@@ -27,8 +27,8 @@ importers:
         specifier: ^7.3.7
         version: 7.3.7(@types/react@18.3.28)(react@18.3.1)
       '@tanstack/react-query':
-        specifier: ^5.90.20
-        version: 5.90.20(react@18.3.1)
+        specifier: ^5.90.21
+        version: 5.90.21(react@18.3.1)
       sweetalert2:
         specifier: ^11.26.18
         version: 11.26.18
@@ -46,8 +46,8 @@ importers:
         specifier: ^2.2.9
         version: 2.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@inertiajs/react':
-        specifier: ^2.3.13
-        version: 2.3.13(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^2.3.14
+        version: 2.3.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tailwindcss/forms':
         specifier: ^0.5.11
         version: 0.5.11(tailwindcss@3.4.19)
@@ -433,11 +433,11 @@ packages:
     peerDependencies:
       onnxruntime-web: 1.21.0
 
-  '@inertiajs/core@2.3.13':
-    resolution: {integrity: sha512-qMHRnb59k/HehXw/WfQt5kPV0k9RapfFcWJZINJnYMwfHDEJ21iNVZjsJHmDN7yWdZmG1Dxi9FP4xarWWgdosQ==}
+  '@inertiajs/core@2.3.14':
+    resolution: {integrity: sha512-A6OU/Ye1ub2Dmn3eNJ2S0sEPKk5dWG/BUISAIDz/318N71/WuRXmEoqyaf9JJiYR7LTnJSO3UlugUPmFne+f1w==}
 
-  '@inertiajs/react@2.3.13':
-    resolution: {integrity: sha512-0a4SgBadHfGX+H/lRQbOmPO8+jTa87nR6qUW/9+YU6eEf738bsQ6enHxEgx9jrpT5fJyLK8RcMUTKpadRUSs1Q==}
+  '@inertiajs/react@2.3.14':
+    resolution: {integrity: sha512-ZyJ/GP0xNMvoqhgWTcRkAqspu1L6Y8Wnk5cFkq1z5MAdZQG/DRq/x9MBZ2oDk7I5aHBWjGSCx1ELW6WAdH/lDw==}
     peerDependencies:
       react: ^16.9.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.9.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -860,8 +860,8 @@ packages:
   '@tanstack/query-core@5.90.20':
     resolution: {integrity: sha512-OMD2HLpNouXEfZJWcKeVKUgQ5n+n3A2JFmBaScpNDUqSrQSjiveC7dKMe53uJUg1nDG16ttFPz2xfilz6i2uVg==}
 
-  '@tanstack/react-query@5.90.20':
-    resolution: {integrity: sha512-vXBxa+qeyveVO7OA0jX1z+DeyCA4JKnThKv411jd5SORpBKgkcVnYKCiBgECvADvniBX7tobwBmg01qq9JmMJw==}
+  '@tanstack/react-query@5.90.21':
+    resolution: {integrity: sha512-0Lu6y5t+tvlTJMTO7oh5NSpJfpg/5D41LlThfepTixPYkJ0sE2Jj0m0f6yYqujBwIXlId87e234+MxG3D3g7kg==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -1548,8 +1548,8 @@ packages:
     resolution: {integrity: sha512-8jbjCR0PPbqoQcv83C2K/zvVeytRPwPpt3WPDbq51qyLAxcWGtXVRjSe6GHtLCoVbg9+NEFkv7GyUxqjcDIJzw==}
     engines: {node: '>=18'}
 
-  qs@6.14.1:
-    resolution: {integrity: sha512-4EK3+xJl8Ts67nLYNwqw/dsFVnCf+qR7RgXSK9jEEm9unao3njwMDdmsdvoKBKHzxd7tCYz5e5M+SnMjdtXGQQ==}
+  qs@6.14.2:
+    resolution: {integrity: sha512-V/yCWTTF7VJ9hIh18Ugr2zhJMP01MY7c5kh4J870L7imm6/DIzBsNLTXzMwUA3yZ5b/KBqLx8Kp3uRvd7xSe3Q==}
     engines: {node: '>=0.6'}
 
   queue-microtask@1.2.3:
@@ -2157,19 +2157,19 @@ snapshots:
       onnxruntime-web: 1.21.0
       zod: 3.25.76
 
-  '@inertiajs/core@2.3.13':
+  '@inertiajs/core@2.3.14':
     dependencies:
       '@types/lodash-es': 4.17.12
       axios: 1.13.5
       laravel-precognition: 1.0.2
       lodash-es: 4.17.23
-      qs: 6.14.1
+      qs: 6.14.2
     transitivePeerDependencies:
       - debug
 
-  '@inertiajs/react@2.3.13(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@inertiajs/react@2.3.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@inertiajs/core': 2.3.13
+      '@inertiajs/core': 2.3.14
       '@types/lodash-es': 4.17.12
       laravel-precognition: 1.0.2
       lodash-es: 4.17.23
@@ -2526,7 +2526,7 @@ snapshots:
 
   '@tanstack/query-core@5.90.20': {}
 
-  '@tanstack/react-query@5.90.20(react@18.3.1)':
+  '@tanstack/react-query@5.90.21(react@18.3.1)':
     dependencies:
       '@tanstack/query-core': 5.90.20
       react: 18.3.1
@@ -3177,7 +3177,7 @@ snapshots:
 
   qs-esm@7.0.3: {}
 
-  qs@6.14.1:
+  qs@6.14.2:
     dependencies:
       side-channel: 1.1.0
 
