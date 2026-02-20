@@ -11,7 +11,7 @@
         "@inertiajs/react": "^2.3.15",
         "@tailwindcss/forms": "^0.5.11",
         "@tailwindcss/vite": "^4.2.0",
-        "@types/node": "^25.2.3",
+        "@types/node": "^25.3.0",
         "@types/react": "^18.3.28",
         "@types/react-dom": "^18.3.7",
         "@vitejs/plugin-react": "^4.7.0",
@@ -34,7 +34,7 @@
         "@mui/material": "^7.3.8",
         "@mui/utils": "^7.3.8",
         "@tanstack/react-query": "^5.90.21",
-        "sweetalert2": "^11.26.18",
+        "sweetalert2": "^11.26.19",
         "ziggy-js": "^2.6.1",
         "zod": "^4.3.6",
         "zustand": "^5.0.11"
