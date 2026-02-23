@@ -6,8 +6,11 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 const queryClient = new QueryClient();
+
+import api from  './lib/axios';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -17,8 +20,8 @@ createInertiaApp({
             import.meta.glob('./Pages/**/*.tsx'),
         ),
     setup({ el, App, props }) {
+        api.get('/sanctum/csrf-cookie')
         const root = createRoot(el);
-
         root.render(
             <QueryClientProvider client={queryClient}>
                 <App {...props} />

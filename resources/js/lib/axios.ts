@@ -10,30 +10,29 @@ const api = axios.create({
     },
 });
 
-// Flag to track if CSRF cookie has been initialized
-let csrfInitialized = false;
-
-// Request interceptor to ensure CSRF cookie is initialized
-api.interceptors.request.use(async (config) => {
-    if (!csrfInitialized) {
-        try {
-            await axios.get('/sanctum/csrf-cookie');
-            csrfInitialized = true;
-        } catch (error) {
-            console.warn('Failed to initialize CSRF cookie:', error);
-        }
-    }
-    return config;
-});
 
 // Response interceptor to handle 401 errors
 api.interceptors.response.use(
     (response) => response,
-    (error) => {
-        if (error.response?.status === 401) {
-            // Reset CSRF initialization flag on 401 errors
-            csrfInitialized = false;
+    async(error) => {
+        const status = error.response?.status;
+        const config = error.config;
+        // 419 -> Refresh CSRF and retry once
+        if (status === 419 && config && !config._retry) {
+            error.config._retry
+            await api.get('/sanctum/csrf-cookie');
+
+            return api.request(config);
         }
+
+        // 419 -> Not authenticated
+        if (status === 401 && !config._retry) {
+            // optional: clear zustand auth store
+            // useAuthStore.getState().logout();
+
+            window.location.href = '/login';
+        }
+
         return Promise.reject(error);
     }
 );
